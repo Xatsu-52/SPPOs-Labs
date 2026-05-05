@@ -51,7 +51,7 @@ public class Main {
         try {
             System.out.println("7. Проверка на превышение максимальной суммы в 50000");
             cart.addObserver(new BudgetWatcher(50000));
-            // для проаерки работоспособности 
+            // для проаерки работоспособности
             //Good juice = new DrinkGoodFactory().create("Сок Rich", 500.0f, 120.0f);
             //cart.add(new GoodItem(juice, 1000));
             System.out.println();
