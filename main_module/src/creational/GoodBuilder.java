@@ -1,14 +1,30 @@
+package creational;
+
+import domain.Good;
+
 public class GoodBuilder {
+    //обязательный парпметры
     private final String name;
     private final double weight;
     private final double cost;
-    private final int ID;
+    //опциональне параметры
+    private int ID = -1;
+    private String type = "None";
 
-    public GoodBuilder(String name, double weight, double cost, int ID) {
+    public GoodBuilder(String name, double weight, double cost) {
         this.name = name;
         this.weight = weight;
         this.cost = cost;
+    }
+
+    public GoodBuilder ID(int ID) {
         this.ID = ID;
+        return this;
+    }
+
+    public GoodBuilder type(String type) {
+        this.type = type;
+        return this;
     }
 
     public Good build() {return new Good(this);}
@@ -27,5 +43,8 @@ public class GoodBuilder {
 
     public int getID() {
         return ID;
+    }
+    public String getType() {
+        return type;
     }
 }

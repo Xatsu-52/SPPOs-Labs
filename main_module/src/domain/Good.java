@@ -1,16 +1,23 @@
+package domain;
+
 import java.util.Objects;
+import creational.GoodBuilder;
 
 public class Good {
+    //обязательные
     private final String name;
     private final double weight;
     private final double cost;
+    //опциональные
     private final int ID;
+    private final String type;
 
     public Good(GoodBuilder builder) {
         this.name = builder.getName();
         this.cost = builder.getCost();
         this.ID = builder.getID();
         this.weight = builder.getWeight();
+        this.type = builder.getType();
     }
 
     public String getName() {
@@ -27,6 +34,9 @@ public class Good {
 
     public int getID() {
         return ID;
+    }
+    public String getType() {
+        return type;
     }
 
     @Override
@@ -45,9 +55,11 @@ public class Good {
     public String toString() {
         return "Good{" +
                 "name='" + name + '\'' +
-                ", weight=" + weight +
-                ", cost=" + cost +
+                ", weight=" + weight + " грамм" +
+                ", cost=" + cost + " рублей" +
                 ", ID=" + ID +
+                ", type='" + type + '\'' +
                 '}';
     }
 }
+
