@@ -5,6 +5,7 @@ public enum GoodType {
     ELECTRONICS("Электроника"),
     CLOTHING("Одежда"),
     HOUSEHOLD("Товары для дома"),
+    DRINK("Напиток"),
     GENERAL("Общее");
 
     private final String label;
