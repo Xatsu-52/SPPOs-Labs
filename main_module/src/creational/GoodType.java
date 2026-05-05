@@ -17,4 +17,5 @@ public enum GoodType {
     public String getLabel() {
         return label;
     }
+
 }
