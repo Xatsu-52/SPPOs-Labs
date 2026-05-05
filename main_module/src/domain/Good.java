@@ -9,7 +9,7 @@ public class Good {
     private final double weight;
     private final double cost;
     //опциональные
-    private final int ID;
+    private int ID;
     private final String type;
 
     public Good(GoodBuilder builder) {
@@ -35,6 +35,9 @@ public class Good {
     public int getID() {
         return ID;
     }
+
+    public void setID(int ID) {this.ID = ID;}
+
     public String getType() {
         return type;
     }

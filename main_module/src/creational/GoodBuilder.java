@@ -9,7 +9,7 @@ public class GoodBuilder {
     private final double cost;
     //опциональне параметры
     private int ID = -1;
-    private String type = "None";
+    private String type = "Общее";
 
     public GoodBuilder(String name, double weight, double cost) {
         this.name = name;
