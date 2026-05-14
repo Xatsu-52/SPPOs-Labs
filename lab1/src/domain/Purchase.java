@@ -30,13 +30,13 @@ public class Purchase implements PurchaseComponent {
     @Override
     public void add(PurchaseComponent component) {
         items.add(component);
-        notifyObservers(); // 👈 УВЕДОМЛЯЕМ НАБЛЮДАТЕЛЕЙ после добавления
+        notifyObservers();
     }
 
     @Override
     public void remove(PurchaseComponent component) {
         items.remove(component);
-        notifyObservers(); // 👈 И после удаления тоже
+        notifyObservers();
     }
 
     @Override
@@ -58,9 +58,9 @@ public class Purchase implements PurchaseComponent {
     }
 
     private void notifyObservers() {
-        double total = getCalculatedCost(); // Используем стратегию для расчёта
+        double total = getCalculatedCost();
         for (PurchaseObserver obs : observers) {
-            obs.onTotalUpdated(total); // 👈 ВЫЗЫВАЕМ onTotalUpdated
+            obs.onTotalUpdated(total);
         }
     }
 
