@@ -45,7 +45,7 @@ public class Main {
 
     private static void printMainMenu() {
 
-        System.out.println("\n===== МАГАЗИН =====");
+        System.out.println("\nДобро пожаловать в МАГАЗИН");
 
         System.out.println("1. Добавить товар");
 
@@ -284,7 +284,7 @@ public class Main {
 
     private static void checkout(Purchase cart) {
 
-        System.out.println("\n===== ОПЛАТА =====");
+        System.out.println("\nРасчет оплаты ");
 
         System.out.println("Базовая стоимость: "
                 + cart.getTotalCost());
@@ -318,7 +318,7 @@ public class Main {
                         + " г"
         );
 
-        System.out.println("\n===== ЧЕК =====");
+        System.out.println("\nЧЕК ");
 
         ReceiptVisitor visitor =
                 new ReceiptVisitor();
@@ -336,7 +336,7 @@ public class Main {
 
     private static void printCatalog() {
 
-        System.out.println("\n===== КАТАЛОГ =====\nМаксимальная сумма 1 чека - 100000 руб.\nПрограмма лояльности применяется при покупке от 50000 руб");
+        System.out.println("\nКАТАЛОГ \nВ связи с ограничениями транзакций со сторны банка\nМаксимальная сумма 1 чека - 100000 руб.\nПрограмма лояльности применяется при покупке от 50000 руб");
 
         for (StockItem item : catalog.values()) {
 
