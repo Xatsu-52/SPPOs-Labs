@@ -9,4 +9,5 @@ public class DiscountDecorator extends PurchaseDecorator {
     }
     @Override public double getTotalCost() { return wrapped.getTotalCost() * (1 - percent); }
     @Override public String getName() { return wrapped.getName() + " (-" + (int)(percent*100) + "%)"; }
+
 }

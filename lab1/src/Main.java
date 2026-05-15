@@ -1,69 +1,411 @@
+import behavioral.*;
 import creational.*;
 import domain.*;
 import structural.*;
-import behavioral.*;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
+
+    private static final Scanner scanner = new Scanner(System.in);
+
+    private static final Map<Integer, StockItem> catalog = new HashMap<>();
+
+    private static final Map<Integer, GoodPrototype> prototypes = new HashMap<>();
+
+    private static int nextID = 1;
+
     public static void main(String[] args) {
-        System.out.println("ЗАПУСК МАГАЗИНА\n");
-        System.out.println("1 - Доступные категории");
-        for (GoodType type : GoodType.values()) {
-            System.out.println("-" + type + " — " + type.getLabel());
+
+        seedProducts();
+
+        while (true) {
+
+            printMainMenu();
+
+            int choice = readInt();
+
+            switch (choice) {
+
+                case 1 -> addNewProduct();
+
+                case 2 -> makePurchase();
+
+                case 0 -> {
+                    System.out.println("Выход...");
+                    return;
+                }
+
+                default -> System.out.println("Неверный пункт меню");
+            }
         }
-        System.out.println("\n2. Создание товаров");
-        GoodFactory foodFactory = new FoodGoodFactory();
-        Good milk = foodFactory.create("Молоко", 1000.0f, 95.0f);
-        milk.setID(0);
-        System.out.println("Создан товар: " + milk);
+    }
 
-        GoodFactory elecFactory = new ElectronicsGoodFactory();
-        Good laptop = elecFactory.create("Ноутбук ASUS", 2300.0f, 85000.0f);
-        laptop.setID(1);
-        System.out.println("Создан товар: " + laptop);
-        GoodFactory hsholderFactory = new HouseHoldsGoodFactory();
-        Good soap = hsholderFactory.create("Мыло хозяйственное", 100.0f, 20.0f);
-        soap.setID(2);
-        System.out.println("Создан товар: " + soap + "\n");
-        Good lockWithKey = hsholderFactory.create("Замок с ключом", 1000.0f, 500.0f);
-        lockWithKey.setID(5);
+    private static void printMainMenu() {
 
-        System.out.println("3. Создание прототипа");
-        GoodPrototype soapTamplate = new GoodPrototype("Мыло", 100.0f, 100.0f, "household");
-        Good soapLiquid = soapTamplate.setName("Жидкое мыло").setCost(200.0f).setID(3).build();
-        Good soapStrawberry = soapTamplate.setName("Клубничное мыло").setCost(120.0f).setID(4).build();
-        System.out.println("Клонированные товары мыла: " + "\n" +soapLiquid + "\n" + soapStrawberry + "\n");
+        System.out.println("\n===== МАГАЗИН =====");
 
-        System.out.println("4. Набор товаров в карзину");
-        Purchase cart = new Purchase("Корзина в Пятёрочке");
-        cart.add(new GoodItem(milk, 14));
-        cart.add(new GoodItem(soapLiquid, 25));
-        cart.add(new GoodItem(lockWithKey, 8));
-        cart.printStructure("  ");
-        System.out.println("Базовая сумма: " + cart.getTotalCost() + " руб.\n");
+        System.out.println("1. Добавить товар");
 
-        System.out.println("5. Скидка");
-        PurchaseComponent discountedCart = new DiscountDecorator(cart, 0.10); // 10%
-        System.out.println("В праздничный день вам начислена скидка 10%), Итого " + discountedCart.getTotalCost() + " руб. с весом " + cart.getTotalWeight() + "г\n");
+        System.out.println("2. Совершить покупку");
 
-        System.out.println("6. Добавлена карта лояльности");
-        cart.setStrategy(new LoyaltyPricing(10000, 0.15));
-        System.out.println("Сумма по стратегии лояльности при покупке от 10000 руб: " + cart.getCalculatedCost() + " руб. с весом " + cart.getTotalWeight() + "г\n");
-        try {
-            System.out.println("7. Проверка на превышение максимальной суммы в 50000");
-            cart.addObserver(new BudgetWatcher(50000));
-            // для проаерки работоспособности
-            //Good juice = new DrinkGoodFactory().create("Сок Rich", 500.0f, 120.0f);
-            //cart.add(new GoodItem(juice, 1000));
-            System.out.println();
+        System.out.println("0. Выход");
+
+        System.out.print("Выбор: ");
+    }
+
+    private static void seedProducts() {
+
+        Good milk_Nina = new GoodBuilder("Молоко от Нины", 1000.0f, 100.0f).ID(1).type("Напиток").build();
+
+
+        catalog.put(
+                milk_Nina.getID(),
+                new StockItem(milk_Nina, 30)
+        );
+
+        prototypes.put(
+                milk_Nina.getID(),
+                new GoodPrototype(
+                        milk_Nina.getName(),
+                        milk_Nina.getWeight(),
+                        milk_Nina.getCost(),
+                        milk_Nina.getType()
+                )
+        );
+        nextID++;
+    }
+
+    private static void addNewProduct() {
+
+        System.out.println("\n1. Создать через Factory");
+
+        System.out.println("2. Клонировать через Prototype");
+
+        System.out.print("Выбор: ");
+
+        int choice = readInt();
+
+        switch (choice) {
+
+            case 1 -> createFromFactory();
+
+            case 2 -> cloneProduct();
+
+            default -> System.out.println("Неверный выбор");
         }
-        catch (RuntimeException e) {
-            System.err.println("ОШИБКА: " + e.getMessage());
-            System.err.println("Покупка не может быть завершена.");
-            System.exit(1);
+    }
+
+    private static void createFromFactory() {
+
+        System.out.print("Название: ");
+
+        String name = scanner.nextLine();
+
+        System.out.print("Вес: ");
+
+        double weight = readDouble();
+
+        System.out.print("Цена: ");
+
+        double cost = readDouble();
+
+        printCategories();
+
+        int typeChoice = readInt();
+
+        GoodFactory factory = switch (typeChoice) {
+
+            case 1 -> new FoodGoodFactory();
+
+            case 2 -> new ElectronicsGoodFactory();
+
+            case 3 -> new ClothingGoodFactory();
+
+            case 4 -> new HouseHoldsGoodFactory();
+
+            case 5 -> new DrinkGoodFactory();
+
+            default -> null;
+        };
+
+        if (factory == null) {
+
+            System.out.println("Неверная категория");
+
+            return;
         }
-        System.out.println("8. Формаирование чека");
-        ReceiptVisitor visitor = new ReceiptVisitor();
-        visitor.visit(cart);
+
+        Good good = factory.create(name, weight, cost);
+
+        good.setID(nextID++);
+
+        System.out.print("Количество на складе: ");
+
+        int quantity = readInt();
+
+        catalog.put(
+                good.getID(),
+                new StockItem(good, quantity)
+        );
+
+        prototypes.put(
+                good.getID(),
+                new GoodPrototype(
+                        good.getName(),
+                        good.getWeight(),
+                        good.getCost(),
+                        good.getType()
+                )
+        );
+
+        System.out.println("Товар создан");
+
+        System.out.println(good);
+    }
+
+    private static void cloneProduct() {
+
+        printCatalog();
+
+        System.out.print("ID товара для клонирования: ");
+
+        int id = readInt();
+
+        GoodPrototype prototype = prototypes.get(id);
+
+        if (prototype == null) {
+
+            System.out.println("Прототип не найден");
+
+            return;
+        }
+
+        GoodPrototype clone = prototype.clone();
+
+        System.out.print("Новое название: ");
+
+        clone.setName(scanner.nextLine());
+
+        System.out.print("Новая цена: ");
+
+        clone.setCost(readDouble());
+
+        clone.setID(nextID++);
+
+        Good good = new Good(
+                clone.getName(),
+                clone.getWeight(),
+                clone.getCost(),
+                clone.getID(),
+                clone.getType()
+        );
+
+        System.out.print("Количество на складе: ");
+
+        int quantity = readInt();
+
+        catalog.put(
+                good.getID(),
+                new StockItem(good, quantity)
+        );
+
+        prototypes.put(
+                good.getID(),
+                new GoodPrototype(
+                        good.getName(),
+                        good.getWeight(),
+                        good.getCost(),
+                        good.getType()
+                )
+        );
+
+        System.out.println("Товар клонирован");
+
+        System.out.println(good);
+    }
+
+    private static void makePurchase() {
+
+        Purchase cart = new Purchase("Корзина");
+
+        cart.addObserver(new BudgetWatcher(100000));
+
+        while (true) {
+
+            printCatalog();
+
+            System.out.println("0. Оплатить");
+
+            System.out.print("ID товара: ");
+
+            int id = readInt();
+
+            if (id == 0) {
+                break;
+            }
+
+            StockItem stockItem = catalog.get(id);
+
+            if (stockItem == null) {
+
+                System.out.println("Товар не найден");
+
+                continue;
+            }
+
+            System.out.print("Количество: ");
+
+            int quantity = readInt();
+
+            if (quantity > stockItem.getQuantity()) {
+
+                System.out.println("Недостаточно товара");
+
+                continue;
+            }
+
+            stockItem.removeQuantity(quantity);
+
+            cart.add(
+                    new GoodItem(
+                            stockItem.getGood(),
+                            quantity
+                    )
+            );
+
+            System.out.println("Товар добавлен в корзину");
+        }
+
+        checkout(cart);
+    }
+
+    private static void checkout(Purchase cart) {
+
+        System.out.println("\n===== ОПЛАТА =====");
+
+        System.out.println("Базовая стоимость: "
+                + cart.getTotalCost());
+
+        cart.setStrategy(
+                new LoyaltyPricing(10000, 0.15)
+        );
+
+        double loyaltyPrice =
+                cart.getCalculatedCost();
+
+        PurchaseComponent discounted =
+                new DiscountDecorator(cart, 0.10);
+
+        double finalPrice =
+                discounted.getTotalCost();
+
+        System.out.println(
+                "Стоимость по лояльности: "
+                        + loyaltyPrice
+        );
+
+        System.out.println(
+                "Стоимость со скидкой: "
+                        + finalPrice
+        );
+
+        System.out.println(
+                "Общий вес: "
+                        + cart.getTotalWeight()
+                        + " г"
+        );
+
+        System.out.println("\n===== ЧЕК =====");
+
+        ReceiptVisitor visitor =
+                new ReceiptVisitor();
+
+        cart.accept(visitor);
+
         System.out.println(visitor.print());
+
+        System.out.println(
+                "ИТОГО: "
+                        + finalPrice
+                        + " руб."
+        );
+    }
+
+    private static void printCatalog() {
+
+        System.out.println("\n===== КАТАЛОГ =====\nМаксимальная сумма 1 чека - 100000 руб.\nПрограмма лояльности применяется при покупке от 50000 руб");
+
+        for (StockItem item : catalog.values()) {
+
+            Good good = item.getGood();
+
+            System.out.println(
+                    "ID=" + good.getID()
+                            + " | "
+                            + good.getName()
+                            + " | "
+                            + good.getType()
+                            + " | "
+                            + good.getCost()
+                            + " руб | "
+                            + good.getWeight()
+                            + " г | Остаток="
+                            + item.getQuantity()
+            );
+        }
+    }
+
+    private static void printCategories() {
+
+        System.out.println("\nКатегории:");
+
+        System.out.println("1. Еда");
+
+        System.out.println("2. Электроника");
+
+        System.out.println("3. Одежда");
+
+        System.out.println("4. Товары для дома");
+
+        System.out.println("5. Напитки");
+
+        System.out.print("Выбор: ");
+    }
+
+    private static int readInt() {
+
+        while (true) {
+
+            try {
+
+                return Integer.parseInt(
+                        scanner.nextLine()
+                );
+            }
+            catch (Exception e) {
+
+                System.out.print("Введите число: ");
+            }
+        }
+    }
+
+    private static double readDouble() {
+
+        while (true) {
+
+            try {
+
+                return Double.parseDouble(
+                        scanner.nextLine()
+                );
+            }
+            catch (Exception e) {
+
+                System.out.print("Введите число: ");
+            }
+        }
     }
 }
