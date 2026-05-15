@@ -1,9 +1,18 @@
 package creational;
 
-public class HouseHoldsGoodFactory implements GoodFactory{
+import domain.Good;
+
+public class HouseHoldsGoodFactory implements GoodFactory {
+
     @Override
-    public void configure(GoodBuilder builder) {
-        builder.type(GoodType.HOUSEHOLD.getLabel());
+    public Good create(String name, double weight, double cost) {
+        return new Good(
+                name,
+                weight,
+                cost,
+                -1,
+                GoodType.HOUSEHOLD.getLabel()
+        );
     }
 
     @Override

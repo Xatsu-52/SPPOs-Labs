@@ -27,7 +27,9 @@ public class GoodBuilder {
         return this;
     }
 
-    public Good build() {return new Good(this);}
+    public Good build() {
+        return new Good(name, weight, cost, ID, type);
+    }
 
     public String getName() {
         return name;

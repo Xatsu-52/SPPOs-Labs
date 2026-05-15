@@ -1,10 +1,18 @@
 package creational;
 
-public class FoodGoodFactory implements GoodFactory{
+import domain.Good;
+
+public class FoodGoodFactory implements GoodFactory {
 
     @Override
-    public void configure(GoodBuilder builder) {
-        builder.type(GoodType.FOOD.getLabel());
+    public Good create(String name, double weight, double cost) {
+        return new Good(
+                name,
+                weight,
+                cost,
+                -1,
+                GoodType.FOOD.getLabel()
+        );
     }
 
     @Override

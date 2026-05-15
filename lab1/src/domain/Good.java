@@ -1,23 +1,28 @@
 package domain;
 
 import java.util.Objects;
-import creational.GoodBuilder;
 
 public class Good {
-    //обязательные
+
     private final String name;
     private final double weight;
     private final double cost;
-    //опциональные
+
     private int ID;
+
     private final String type;
 
-    public Good(GoodBuilder builder) {
-        this.name = builder.getName();
-        this.cost = builder.getCost();
-        this.ID = builder.getID();
-        this.weight = builder.getWeight();
-        this.type = builder.getType();
+    public Good(String name,
+                double weight,
+                double cost,
+                int ID,
+                String type) {
+
+        this.name = name;
+        this.weight = weight;
+        this.cost = cost;
+        this.ID = ID;
+        this.type = type;
     }
 
     public String getName() {
