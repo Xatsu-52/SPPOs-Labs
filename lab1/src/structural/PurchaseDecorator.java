@@ -10,9 +10,6 @@ public abstract class PurchaseDecorator implements PurchaseComponent {
 
     @Override public double getTotalCost() { return wrapped.getTotalCost(); }
     @Override public double getTotalWeight() { return wrapped.getTotalWeight(); }
-
-    @Override public void add(PurchaseComponent c) { wrapped.add(c); }
-    @Override public void remove(PurchaseComponent c) { wrapped.remove(c); }
     @Override public String getName() { return wrapped.getName(); }
     @Override public int getCount() { return wrapped.getCount(); }
 }

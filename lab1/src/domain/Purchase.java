@@ -1,12 +1,16 @@
 package domain;
-import behavioral.PurchaseObserver;
+
 import behavioral.PricingStrategy;
+import behavioral.PurchaseObserver;
 import behavioral.StandardPricing;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Purchase implements PurchaseComponent {
+public class Purchase implements PurchaseContainer {
+
     private final String name;
+
     private final List<PurchaseComponent> items = new ArrayList<>();
 
     private final List<PurchaseObserver> observers = new ArrayList<>();
@@ -15,16 +19,6 @@ public class Purchase implements PurchaseComponent {
 
     public Purchase(String name) {
         this.name = name;
-    }
-
-    @Override
-    public double getTotalCost() {
-        return items.stream().mapToDouble(PurchaseComponent::getTotalCost).sum();
-    }
-
-    @Override
-    public double getTotalWeight() {
-        return items.stream().mapToDouble(PurchaseComponent::getTotalWeight).sum();
     }
 
     @Override
@@ -40,6 +34,25 @@ public class Purchase implements PurchaseComponent {
     }
 
     @Override
+    public List<PurchaseComponent> getItems() {
+        return items;
+    }
+
+    @Override
+    public double getTotalCost() {
+        return items.stream()
+                .mapToDouble(PurchaseComponent::getTotalCost)
+                .sum();
+    }
+
+    @Override
+    public double getTotalWeight() {
+        return items.stream()
+                .mapToDouble(PurchaseComponent::getTotalWeight)
+                .sum();
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -49,18 +62,15 @@ public class Purchase implements PurchaseComponent {
         return items.size();
     }
 
-    public List<PurchaseComponent> getItems() {
-        return items;
-    }
-
     public void addObserver(PurchaseObserver observer) {
         observers.add(observer);
     }
 
     private void notifyObservers() {
         double total = getCalculatedCost();
-        for (PurchaseObserver obs : observers) {
-            obs.onTotalUpdated(total);
+
+        for (PurchaseObserver observer : observers) {
+            observer.onTotalUpdated(total);
         }
     }
 
@@ -77,16 +87,32 @@ public class Purchase implements PurchaseComponent {
     }
 
     public void printStructure(String indent) {
-        System.out.println(indent + "+ " + getName() +
-                " | Итого: " + getTotalCost() + " руб, " +
-                getTotalWeight() + " г");
+
+        System.out.println(
+                indent + "+ " + getName()
+                        + " | Итого: "
+                        + getTotalCost()
+                        + " руб, "
+                        + getTotalWeight()
+                        + " г"
+        );
+
         for (PurchaseComponent item : items) {
-            if (item instanceof Purchase) {
-                ((Purchase) item).printStructure(indent + "  ");
-            } else {
-                System.out.println(indent + "  - " + item.getName() +
-                        " | " + item.getTotalCost() + " руб, " +
-                        item.getTotalWeight() + " г");
+
+            if (item instanceof Purchase purchase) {
+                purchase.printStructure(indent + "  ");
+            }
+            else {
+
+                System.out.println(
+                        indent + "  - "
+                                + item.getName()
+                                + " | "
+                                + item.getTotalCost()
+                                + " руб, "
+                                + item.getTotalWeight()
+                                + " г"
+                );
             }
         }
     }
