@@ -1,5 +1,7 @@
 package domain;
 
+import behavioral.ReceiptVisitor;
+
 public class GoodItem implements PurchaseComponent {
 
     private final Good good;
@@ -33,5 +35,10 @@ public class GoodItem implements PurchaseComponent {
     @Override
     public int getCount() {
         return quantity;
+    }
+
+    @Override
+    public void accept(ReceiptVisitor visitor) {
+        visitor.visit(this);
     }
 }

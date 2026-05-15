@@ -1,5 +1,7 @@
 package domain;
 
+import behavioral.ReceiptVisitor;
+
 public interface PurchaseComponent {
 
     double getTotalCost();
@@ -9,4 +11,6 @@ public interface PurchaseComponent {
     String getName();
 
     int getCount();
+
+    void accept(ReceiptVisitor visitor);
 }

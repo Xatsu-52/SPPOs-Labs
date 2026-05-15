@@ -2,6 +2,7 @@ package domain;
 
 import behavioral.PricingStrategy;
 import behavioral.PurchaseObserver;
+import behavioral.ReceiptVisitor;
 import behavioral.StandardPricing;
 
 import java.util.ArrayList;
@@ -60,6 +61,11 @@ public class Purchase implements PurchaseContainer {
     @Override
     public int getCount() {
         return items.size();
+    }
+
+    @Override
+    public void accept(ReceiptVisitor visitor) {
+        visitor.visit(this);
     }
 
     public void addObserver(PurchaseObserver observer) {
